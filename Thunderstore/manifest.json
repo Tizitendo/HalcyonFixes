@@ -1,0 +1,10 @@
+﻿{
+	"name": "HalcyonFixes",
+	"version_number": "1.0.0",
+	"website_url": "https://github.com/Tizitendo/HalcyonFixes",
+	"description": "Fixes some bugs with halcyonites AI",
+	"dependencies": [
+		"bbepis-BepInExPack-5.4.2108",
+		"RiskofThunder-HookGenPatcher-1.2.3"
+	]
+}
