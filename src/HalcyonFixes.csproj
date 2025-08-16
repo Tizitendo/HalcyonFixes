@@ -29,7 +29,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="copy /Y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Thunderstore&quot;&#xD;&#xA;xcopy /Y &quot;$(ProjectDir)..\Thunderstore&quot; &quot;C:\Users\TIZIA\AppData\Roaming\com.kesomannen.gale\riskofrain2\profiles\modding\BepInEx\plugins\0n_x-testmod&quot;" />
+	  <Exec Command="copy /Y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Thunderstore&quot;&#xD;&#xA;rmdir /S /Q &quot;C:\Users\TIZIA\AppData\Roaming\com.kesomannen.gale\riskofrain2\profiles\modding\BepInEx\plugins\0n_x-testmod&quot;&#xD;&#xA;mkdir &quot;C:\Users\TIZIA\AppData\Roaming\com.kesomannen.gale\riskofrain2\profiles\modding\BepInEx\plugins\0n_x-testmod&quot;&#xD;&#xA;xcopy /Y &quot;$(ProjectDir)..\Thunderstore&quot; &quot;C:\Users\TIZIA\AppData\Roaming\com.kesomannen.gale\riskofrain2\profiles\modding\BepInEx\plugins\0n_x-testmod&quot;" />
 	</Target>
 
 </Project>
