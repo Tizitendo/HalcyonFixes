@@ -1,6 +1,6 @@
 ﻿{
 	"name": "HalcyonFixes",
-	"version_number": "1.1.0",
+	"version_number": "1.2.0",
 	"website_url": "https://github.com/Tizitendo/HalcyonFixes",
 	"description": "Fixes some bugs with halcyonites AI",
 	"dependencies": [
