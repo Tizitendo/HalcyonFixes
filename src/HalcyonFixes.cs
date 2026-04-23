@@ -17,7 +17,7 @@ public class HalcyonFixes : BaseUnityPlugin
     public const string PluginGUID = PluginAuthor + "." + PluginName;
     public const string PluginAuthor = "Onyx";
     public const string PluginName = "HalcyonFixes";
-    public const string PluginVersion = "1.2.0";
+    public const string PluginVersion = "1.2.1";
 
     public void Awake()
     {
@@ -35,6 +35,38 @@ public class HalcyonFixes : BaseUnityPlugin
 		IL.EntityStates.Halcyonite.WhirlWindPersuitCycle.CheckIfArrived += CheckIfArrived;
 		On.EntityStates.Halcyonite.WhirlWindPersuitCycle.GetMinimumInterruptPriority += GetMinimumInterruptPriority_PrioritySkill;
 		On.EntityStates.EntityState.GetMinimumInterruptPriority += GetMinimumInterruptPriority_PrioritySkill;
+		IL.EntityStates.Halcyonite.TriLaser.FireTriLaser += FireTriLaser;
+	}
+
+	void FireTriLaser(ILContext il)
+	{
+		ILCursor c = new ILCursor(il);
+		int laserVectorLoc = 0;
+
+		if (c.TryGotoNext(MoveType.After,
+				x => x.MatchCallOrCallvirt(typeof(RaycastHit), "get_point"),
+				x => x.MatchStloc(out laserVectorLoc)
+			))
+		{
+			c.Emit(OpCodes.Ldarg_0);
+			c.Emit(OpCodes.Ldloc, laserVectorLoc);
+			c.EmitDelegate<Func<TriLaser, Vector3, Vector3>>(checkWallDistance);
+			c.Emit(OpCodes.Stloc, laserVectorLoc);
+		}
+		else
+		{
+			Log.Error(il.Method.Name + " IL Hook failed!");
+		}
+
+		Vector3 checkWallDistance(TriLaser self, Vector3 laserVector)
+		{
+			Ray aimray = new(self.modifiedAimRay.origin + self.modifiedAimRay.direction.normalized * (-1), self.modifiedAimRay.direction);
+			if (Physics.Raycast(aimray, out var hitInfo, 2, LayerIndex.world.mask))
+			{
+				return hitInfo.point;
+			}
+			return laserVector;
+		}
 	}
 
 	private InterruptPriority GetMinimumInterruptPriority_PrioritySkill(On.EntityStates.EntityState.orig_GetMinimumInterruptPriority orig, EntityState self)
