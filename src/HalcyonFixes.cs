@@ -4,6 +4,8 @@ using EntityStates.Halcyonite;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using RoR2;
+using RoR2.ContentManagement;
+using RoR2BepInExPack.GameAssetPathsBetter;
 using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -17,7 +19,7 @@ public class HalcyonFixes : BaseUnityPlugin
     public const string PluginGUID = PluginAuthor + "." + PluginName;
     public const string PluginAuthor = "Onyx";
     public const string PluginName = "HalcyonFixes";
-    public const string PluginVersion = "1.2.1";
+    public const string PluginVersion = "1.2.2";
 
     public void Awake()
     {
@@ -28,14 +30,45 @@ public class HalcyonFixes : BaseUnityPlugin
 		RoR2.Skills.SkillDef whirlwindRush = Addressables.LoadAssetAsync<RoR2.Skills.SkillDef>("RoR2/DLC2/Halcyonite/HalcyoniteMonsterWhirlwindRush.asset").WaitForCompletion();
 		whirlwindRush.interruptPriority = InterruptPriority.Any;
 
+		AssetReferenceT<GameObject> prefab = new AssetReferenceT<GameObject>(RoR2_DLC2.ShrineHalcyonite_prefab);
+		AssetAsyncReferenceManager<GameObject>.LoadAsset(prefab).Completed += (x) =>
+		{
+			GameObject brokenPing = x.Result.transform.Find("RangeIndicator/RangeFX/CrystalLines/Particle SystemCollider Kill Trigger").gameObject;
+			brokenPing.layer = (int)LayerIndex.collideWithCharacterHullOnly;
+			x.Result.transform.Find("Camp 1 - Flavor Props (Inner Radius)").GetComponent<CombatDirector>().enabled = false;
+			x.Result.transform.Find("Camp 2 - Flavor Props (Outer Radius)").GetComponent<CombatDirector>().enabled = false;
+		};
+
 		On.EntityStates.Halcyonite.SpawnState.OnEnter += SpawnState_OnEnter;
 		On.EntityStates.Halcyonite.WhirlwindWarmUp.OnExit += WhirlwindWarmUp_OnExit;
-		On.EntityStates.Halcyonite.WhirlWindPersuitCycle.OnEnter += WhirlwindWarmUp_OnEnter;
+		On.EntityStates.Halcyonite.WhirlWindPersuitCycle.OnEnter += WhirlWindPersuitCycle_OnEnter;
 		On.EntityStates.Halcyonite.WhirlWindPersuitCycle.UpdateDecelerate += UpdateDecelerate;
 		IL.EntityStates.Halcyonite.WhirlWindPersuitCycle.CheckIfArrived += CheckIfArrived;
 		On.EntityStates.Halcyonite.WhirlWindPersuitCycle.GetMinimumInterruptPriority += GetMinimumInterruptPriority_PrioritySkill;
 		On.EntityStates.EntityState.GetMinimumInterruptPriority += GetMinimumInterruptPriority_PrioritySkill;
 		IL.EntityStates.Halcyonite.TriLaser.FireTriLaser += FireTriLaser;
+
+		On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteNoQuality.OnEnter += (orig, self) =>
+		{
+			self.tierChangeMonsterCreditReduction = int.MaxValue;
+			orig(self);
+			self.parentShrineReference.activationDirector.monsterCredit = self.parentShrineReference.monsterCredit * 0.5f;
+			self.parentShrineReference.activationDirector.SpendAllCreditsOnMapSpawns(self.parentShrineReference.gameObject.transform);
+		};
+		On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteLowQuality.OnEnter += (orig, self) =>
+		{
+			self.tierChangeMonsterCreditReduction = int.MaxValue;
+			orig(self);
+			self.parentShrineReference.activationDirector.monsterCredit = self.parentShrineReference.monsterCredit * 0.75f;
+			self.parentShrineReference.activationDirector.SpendAllCreditsOnMapSpawns(self.parentShrineReference.gameObject.transform);
+		};
+		On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteMidQuality.OnEnter += (orig, self) =>
+		{
+			self.tierChangeMonsterCreditReduction = int.MaxValue;
+			orig(self);
+			self.parentShrineReference.activationDirector.monsterCredit = self.parentShrineReference.monsterCredit;
+			self.parentShrineReference.activationDirector.SpendAllCreditsOnMapSpawns(self.parentShrineReference.gameObject.transform);
+		};
 	}
 
 	void FireTriLaser(ILContext il)
@@ -146,7 +179,7 @@ public class HalcyonFixes : BaseUnityPlugin
 		self.characterDirection.moveVector = self.targetMoveDirt.normalized;
 	}
 
-	private void WhirlwindWarmUp_OnEnter(On.EntityStates.Halcyonite.WhirlWindPersuitCycle.orig_OnEnter orig, EntityStates.Halcyonite.WhirlWindPersuitCycle self)
+	private void WhirlWindPersuitCycle_OnEnter(On.EntityStates.Halcyonite.WhirlWindPersuitCycle.orig_OnEnter orig, EntityStates.Halcyonite.WhirlWindPersuitCycle self)
 	{
 		orig(self);
 		CharacterGravityParameters gravityParameters = self.characterMotor.gravityParameters;
