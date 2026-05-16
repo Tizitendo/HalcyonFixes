@@ -19,7 +19,7 @@ public class HalcyonFixes : BaseUnityPlugin
     public const string PluginGUID = PluginAuthor + "." + PluginName;
     public const string PluginAuthor = "Onyx";
     public const string PluginName = "HalcyonFixes";
-    public const string PluginVersion = "1.2.2";
+    public const string PluginVersion = "1.2.3";
 
     public void Awake()
     {
@@ -47,28 +47,6 @@ public class HalcyonFixes : BaseUnityPlugin
 		On.EntityStates.Halcyonite.WhirlWindPersuitCycle.GetMinimumInterruptPriority += GetMinimumInterruptPriority_PrioritySkill;
 		On.EntityStates.EntityState.GetMinimumInterruptPriority += GetMinimumInterruptPriority_PrioritySkill;
 		IL.EntityStates.Halcyonite.TriLaser.FireTriLaser += FireTriLaser;
-
-		On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteNoQuality.OnEnter += (orig, self) =>
-		{
-			self.tierChangeMonsterCreditReduction = int.MaxValue;
-			orig(self);
-			self.parentShrineReference.activationDirector.monsterCredit = self.parentShrineReference.monsterCredit * 0.5f;
-			self.parentShrineReference.activationDirector.SpendAllCreditsOnMapSpawns(self.parentShrineReference.gameObject.transform);
-		};
-		On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteLowQuality.OnEnter += (orig, self) =>
-		{
-			self.tierChangeMonsterCreditReduction = int.MaxValue;
-			orig(self);
-			self.parentShrineReference.activationDirector.monsterCredit = self.parentShrineReference.monsterCredit * 0.75f;
-			self.parentShrineReference.activationDirector.SpendAllCreditsOnMapSpawns(self.parentShrineReference.gameObject.transform);
-		};
-		On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteMidQuality.OnEnter += (orig, self) =>
-		{
-			self.tierChangeMonsterCreditReduction = int.MaxValue;
-			orig(self);
-			self.parentShrineReference.activationDirector.monsterCredit = self.parentShrineReference.monsterCredit;
-			self.parentShrineReference.activationDirector.SpendAllCreditsOnMapSpawns(self.parentShrineReference.gameObject.transform);
-		};
 	}
 
 	void FireTriLaser(ILContext il)

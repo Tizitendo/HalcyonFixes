@@ -1,3 +1,6 @@
+## 1.2.3
+* Removed golem credit change
+
 ## 1.2.2
 * Fix shrine ping hitbox
 * Fix golems spawning when they're not supposed to
