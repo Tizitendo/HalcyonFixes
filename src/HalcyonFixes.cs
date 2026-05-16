@@ -5,6 +5,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using RoR2;
 using RoR2.ContentManagement;
+using RoR2.Skills;
 using RoR2BepInExPack.GameAssetPathsBetter;
 using System;
 using UnityEngine;
@@ -19,7 +20,7 @@ public class HalcyonFixes : BaseUnityPlugin
     public const string PluginGUID = PluginAuthor + "." + PluginName;
     public const string PluginAuthor = "Onyx";
     public const string PluginName = "HalcyonFixes";
-    public const string PluginVersion = "1.2.3";
+    public const string PluginVersion = "1.2.4";
 
     public void Awake()
     {
@@ -38,6 +39,30 @@ public class HalcyonFixes : BaseUnityPlugin
 			x.Result.transform.Find("Camp 1 - Flavor Props (Inner Radius)").GetComponent<CombatDirector>().enabled = false;
 			x.Result.transform.Find("Camp 2 - Flavor Props (Outer Radius)").GetComponent<CombatDirector>().enabled = false;
 		};
+
+		AssetReferenceT<EntityStateConfiguration> entityState = new(RoR2_DLC2_Halcyonite.EntityStates_HalcyoniteMonster_GoldenSwipe_asset);
+		AssetAsyncReferenceManager<EntityStateConfiguration>.LoadAsset(entityState).Completed += (x) =>
+		{
+			x.Result.targetType = (HG.SerializableSystemType)typeof(FixedSwipe);
+		};
+		entityState = new(RoR2_DLC2_Halcyonite.EntityStates_HalcyoniteMonster_GoldenSlash_asset);
+		AssetAsyncReferenceManager<EntityStateConfiguration>.LoadAsset(entityState).Completed += (x) =>
+		{
+			x.Result.targetType = (HG.SerializableSystemType)typeof(FixedSlash);
+		};
+
+		AssetReferenceT<SkillDef> skillDef = new(RoR2_DLC2_Halcyonite.HalcyoniteMonsterGoldenSwipe_asset);
+		AssetAsyncReferenceManager<SkillDef>.LoadAsset(skillDef).Completed += (x) =>
+		{
+			x.Result.activationState = new SerializableEntityStateType(typeof(FixedSwipe));
+		};
+		skillDef = new(RoR2_DLC2_Halcyonite.HalcyoniteMonsterGoldenSlash_asset);
+		AssetAsyncReferenceManager<SkillDef>.LoadAsset(skillDef).Completed += (x) =>
+		{
+			x.Result.activationState = new SerializableEntityStateType(typeof(FixedSlash));
+		};
+		R2API.ContentAddition.AddEntityState<FixedSlash>(out _);
+		R2API.ContentAddition.AddEntityState<FixedSwipe>(out _);
 
 		On.EntityStates.Halcyonite.SpawnState.OnEnter += SpawnState_OnEnter;
 		On.EntityStates.Halcyonite.WhirlwindWarmUp.OnExit += WhirlwindWarmUp_OnExit;
@@ -177,5 +202,27 @@ public class HalcyonFixes : BaseUnityPlugin
 		CharacterFlightParameters flightParameters = self.characterMotor.flightParameters;
 		flightParameters.channeledFlightGranterCount = 0;
 		self.characterMotor.flightParameters = flightParameters;
+	}
+}
+
+public class FixedSwipe : GoldenSwipe
+{
+	public override bool allowExitFire => false;
+	public override void OnEnter()
+	{
+		pushAwayForce = 0;
+		forceVector = new Vector3(base.inputBank.aimDirection.x, 0.5f, base.inputBank.aimDirection.z) * 5000;
+		base.OnEnter();
+	}
+}
+
+public class FixedSlash : GoldenSlash
+{
+	public override bool allowExitFire => false;
+	public override void OnEnter()
+	{
+		pushAwayForce = 0;
+		forceVector = new Vector3(base.inputBank.aimDirection.x, 0.5f, base.inputBank.aimDirection.z) * 5000;
+		base.OnEnter();
 	}
 }

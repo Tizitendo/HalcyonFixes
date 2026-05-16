@@ -23,6 +23,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Reference Include="MiscFixes">
+	    <HintPath>..\..\references\MiscFixes-nstrip.dll</HintPath>
+	  </Reference>
 	  <Reference Include="RiskOfOptions">
 	    <HintPath>..\..\Rune580-Risk_Of_Options-2.8.4\plugins\RiskOfOptions\RiskOfOptions.dll</HintPath>
 	  </Reference>

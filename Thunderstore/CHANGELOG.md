@@ -1,3 +1,7 @@
+## 1.2.4
+* Fix primary knockback going in the wrong direction
+* Fix primary hitbox activating instantly on interrupt
+
 ## 1.2.3
 * Removed golem credit change
 
