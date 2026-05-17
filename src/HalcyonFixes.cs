@@ -20,7 +20,7 @@ public class HalcyonFixes : BaseUnityPlugin
     public const string PluginGUID = PluginAuthor + "." + PluginName;
     public const string PluginAuthor = "Onyx";
     public const string PluginName = "HalcyonFixes";
-    public const string PluginVersion = "1.2.4";
+    public const string PluginVersion = "1.2.5";
 
     public void Awake()
     {
@@ -214,6 +214,11 @@ public class FixedSwipe : GoldenSwipe
 		forceVector = new Vector3(base.inputBank.aimDirection.x, 0.5f, base.inputBank.aimDirection.z) * 5000;
 		base.OnEnter();
 	}
+
+	public override void FixedUpdate()
+	{
+		base.FixedUpdate();
+	}
 }
 
 public class FixedSlash : GoldenSlash
@@ -224,5 +229,10 @@ public class FixedSlash : GoldenSlash
 		pushAwayForce = 0;
 		forceVector = new Vector3(base.inputBank.aimDirection.x, 0.5f, base.inputBank.aimDirection.z) * 5000;
 		base.OnEnter();
+	}
+
+	public override void FixedUpdate()
+	{
+		base.FixedUpdate();
 	}
 }

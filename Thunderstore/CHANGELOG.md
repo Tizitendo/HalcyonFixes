@@ -1,3 +1,6 @@
+## 1.2.5
+* Compat stuff needed for halcyonknight
+
 ## 1.2.4
 * Fix primary knockback going in the wrong direction
 * Fix primary hitbox activating instantly on interrupt
