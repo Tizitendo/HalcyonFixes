@@ -159,18 +159,21 @@ public class HalcyonFixes : BaseUnityPlugin
 				x => x.MatchLdfld(typeof(WhirlWindPersuitCycle), nameof(WhirlWindPersuitCycle.targetPos))
 			))
 		{
-			c.Emit(OpCodes.Pop);
 			c.Emit(OpCodes.Ldarg_0);
-			c.EmitDelegate<Func<WhirlWindPersuitCycle, Vector3>>(targetToCurrentPos);
+			c.EmitDelegate<Func<Vector3, WhirlWindPersuitCycle, Vector3>>(targetToCurrentPos);
 		}
 		else
 		{
 			Log.Error(il.Method.Name + " IL Hook failed!");
 		}
 
-		Vector3 targetToCurrentPos(WhirlWindPersuitCycle self)
+		Vector3 targetToCurrentPos(Vector3 target, WhirlWindPersuitCycle self)
 		{
-			return self.targetBody.footPosition;
+			if (self.targetBody && self.targetBody.footPosition != null)
+			{
+				return self.targetBody.footPosition;
+			}
+			return target;
 		}
 	}
 

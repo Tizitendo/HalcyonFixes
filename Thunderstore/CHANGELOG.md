@@ -1,3 +1,6 @@
+## 1.2.6
+* Nullcheck
+
 ## 1.2.5
 * Compat stuff needed for halcyonknight
 
