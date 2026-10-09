@@ -15,24 +15,32 @@
 		<PackageReference Include="BepInEx.Core" Version="5.4.21" />
 
 		<PackageReference Include="R2API.Items" Version="1.0.*" />
-		<PackageReference Include="R2API.Language" Version="1.0.*" />
+		<PackageReference Include="R2API.Language" Version="1.1.0" />
+		<PackageReference Include="Rune580.Mods.RiskOfRain2.RiskOfOptions" Version="2.8.6" />
 
 		<PackageReference Include="UnityEngine.Modules" Version="2021.3.33" IncludeAssets="compile" />
-		<PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.1.0-r.0" />
-		<PackageReference Include="MMHOOK.RoR2" Version="2025.11.19" NoWarn="NU1701" />
+		<PackageReference Include="RiskOfRain2.GameLibs" Version="1.5.0-r.1" />
+		<PackageReference Include="MMHOOK.RoR2" Version="2026.10.8" NoWarn="NU1701" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Reference Include="MiscFixes">
 	    <HintPath>..\..\references\MiscFixes-nstrip.dll</HintPath>
 	  </Reference>
-	  <Reference Include="RiskOfOptions">
-	    <HintPath>..\..\Rune580-Risk_Of_Options-2.8.4\plugins\RiskOfOptions\RiskOfOptions.dll</HintPath>
-	  </Reference>
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="copy /Y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Thunderstore&quot;&#xD;&#xA;rmdir /S /Q &quot;C:\Users\TIZIA\AppData\Roaming\com.kesomannen.gale\riskofrain2\profiles\modding\BepInEx\plugins\0n_x-testmod&quot;&#xD;&#xA;mkdir &quot;C:\Users\TIZIA\AppData\Roaming\com.kesomannen.gale\riskofrain2\profiles\modding\BepInEx\plugins\0n_x-testmod&quot;&#xD;&#xA;xcopy /Y &quot;$(ProjectDir)..\Thunderstore&quot; &quot;C:\Users\TIZIA\AppData\Roaming\com.kesomannen.gale\riskofrain2\profiles\modding\BepInEx\plugins\0n_x-testmod&quot;" />
+		<!-- Window Build -->
+		<!-- <Exec Command="xcopy /Y /s /e &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Thunderstore\plugins&quot;&#xD;&#xA;&#xD;&#xA;" />
+		<Exec Command="rmdir /S /Q &quot;C:\Users\TIZIA\AppData\Roaming\com.kesomannen.gale\riskofrain2\profiles\modding\BepInEx\plugins\0n_x-testmod&quot;&#xD;&#xA;&#xD;&#xA;" />
+		<Exec Command="mkdir &quot;C:\Users\TIZIA\AppData\Roaming\com.kesomannen.gale\riskofrain2\profiles\modding\BepInEx\plugins\0n_x-testmod&quot;&#xD;&#xA;&#xD;&#xA;" />
+		<Exec Command="xcopy /Y /s /e &quot;$(ProjectDir)..\Thunderstore\plugins&quot; &quot;C:\Users\TIZIA\AppData\Roaming\com.kesomannen.gale\riskofrain2\profiles\modding\BepInEx\plugins\0n_x-testmod&quot;" /> -->
+		
+		<!-- Linux Build -->
+		<Exec Command="rsync -avz $(TargetPath) $(ProjectDir)../Thunderstore/plugins" />
+		<Exec Command="rm -rf /home/tizian/.local/share/com.kesomannen.gale/riskofrain2/profiles/Modding/BepInEx/plugins/0n_x-testmod" />
+		<Exec Command="mkdir /home/tizian/.local/share/com.kesomannen.gale/riskofrain2/profiles/Modding/BepInEx/plugins/0n_x-testmod" />
+		<Exec Command="rsync -avz $(ProjectDir)../Thunderstore /home/tizian/.local/share/com.kesomannen.gale/riskofrain2/profiles/Modding/BepInEx/plugins/0n_x-testmod" /> 
 	</Target>
 
 </Project>

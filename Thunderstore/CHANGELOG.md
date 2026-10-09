@@ -1,3 +1,7 @@
+## 1.3.0
+* Updated to hc
+* Fixed halcs spin animation being way too fast
+
 ## 1.2.6
 * Nullcheck
 
